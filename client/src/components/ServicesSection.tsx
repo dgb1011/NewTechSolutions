@@ -1,5 +1,8 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import { useSpotlight } from "@/hooks/useSpotlight";
 import { CardSpotlight } from "./Spotlight";
 
@@ -54,74 +57,181 @@ const services = [
   },
 ];
 
-function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { position, isVisible, bindSpotlight } = useSpotlight();
+function getColorGradient(color: string) {
+  switch (color) {
+    case "mars":
+      return "from-red-500 to-orange-500";
+    case "saturn":
+      return "from-yellow-500 to-yellow-400";
+    case "neptune":
+      return "from-blue-500 to-purple-500";
+    case "jupiter":
+      return "from-green-500 to-teal-500";
+    default:
+      return "from-gray-500 to-gray-400";
+  }
+}
 
-  useEffect(() => {
-    const cleanup = bindSpotlight(cardRef.current);
-    return cleanup;
-  }, [bindSpotlight]);
+// React Bits Interactive Service Card Component
+const InteractiveServiceCard = ({ service, index }: { service: any; index: number }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setMousePosition({ x, y });
+  };
 
   return (
     <motion.div
-      ref={cardRef}
-      className="service-card relative glass-card rounded-2xl p-8 hover-lift cursor-pointer"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{ y: -10 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      className="relative"
     >
-      <CardSpotlight x={position.x} y={position.y} visible={isVisible} />
-      <div className="relative z-10">
-        <div className={`w-16 h-16 bg-gradient-to-br from-${service.color} to-${service.color}/50 rounded-xl flex items-center justify-center mb-6`}>
-          <i className={`${service.icon} text-white text-2xl`}></i>
-        </div>
-        <h3 className="text-2xl font-semibold mb-4 gradient-text">{service.title}</h3>
-        <p className="text-neutral-300 mb-6 leading-relaxed">
-          {service.description}
-        </p>
-        <img 
-          src={service.image} 
-          alt={service.title} 
-          className="rounded-lg w-full h-40 object-cover mb-4" 
+      <Card className="bg-gray-900 border-gray-800 hover:border-red-500 transition-all duration-500 group h-full overflow-hidden relative">
+        {/* Animated background gradient on hover */}
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 59, 48, 0.15), transparent 40%)`,
+          }}
         />
-        <div className="flex flex-wrap gap-2">
-          {service.technologies.map((tech) => (
-            <span key={tech} className="bg-white/10 px-3 py-1 rounded-full text-xs">
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
+
+        <CardHeader className="relative z-10">
+          <div className="flex items-center mb-4">
+            <motion.div 
+              className={`w-12 h-12 rounded-lg bg-gradient-to-r ${getColorGradient(service.color)} flex items-center justify-center text-white text-xl transition-transform duration-500`}
+              whileHover={{ scale: 1.2, rotate: 360 }}
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              <i className={service.icon}></i>
+            </motion.div>
+          </div>
+          <CardTitle className="text-white text-xl mb-2 group-hover:text-red-400 transition-colors duration-300">
+            {service.title}
+          </CardTitle>
+          <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+            {service.description}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="relative z-10">
+          <div className="aspect-video mb-4 rounded-lg overflow-hidden relative">
+            <motion.img
+              src={service.image}
+              alt={service.title}
+              className="w-full h-full object-cover"
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.6 }}
+            />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {service.technologies.map((tech: string, techIndex: number) => (
+              <motion.div
+                key={tech}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: techIndex * 0.1 }}
+                whileHover={{ scale: 1.1 }}
+              >
+                <Badge 
+                  variant="secondary" 
+                  className="bg-gray-800 text-gray-300 hover:bg-red-900 hover:text-white transition-all duration-300 cursor-pointer"
+                >
+                  {tech}
+                </Badge>
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+
+        {/* Glowing border effect */}
+        <motion.div
+          className="absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-red-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{ padding: '2px', background: 'linear-gradient(45deg, #ff3b30, #007aff)', borderRadius: '8px' }}
+          animate={isHovered ? { rotate: 360 } : { rotate: 0 }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="w-full h-full bg-gray-900 rounded-md" />
+        </motion.div>
+      </Card>
     </motion.div>
   );
-}
+};
 
 export function ServicesSection() {
   return (
-    <section id="services" className="py-20 relative">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+    <section className="py-20 bg-black relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 25% 25%, #ff3b30 0%, transparent 50%),
+                           radial-gradient(circle at 75% 75%, #007aff 0%, transparent 50%)`,
+          backgroundSize: '100px 100px',
+          animation: 'float 20s ease-in-out infinite',
+        }} />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-5xl font-light mb-6">
-            <span className="gradient-text">Our</span> <span className="font-semibold">Services</span>
-          </h2>
-          <p className="text-xl text-neutral-300 max-w-3xl mx-auto">
-            From concept to deployment, we deliver comprehensive digital solutions that drive growth and innovation.
-          </p>
+          <motion.h2 
+            className="text-4xl md:text-6xl font-bold text-white mb-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Our <span className="text-red-500 inline-block">
+              <motion.span
+                animate={{ rotateY: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Services
+              </motion.span>
+            </span>
+          </motion.h2>
+          <motion.p 
+            className="text-xl text-gray-400 max-w-3xl mx-auto"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            Comprehensive solutions tailored to elevate your digital presence and drive business growth.
+          </motion.p>
         </motion.div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <ServiceCard key={service.title} service={service} index={index} />
+            <InteractiveServiceCard key={index} service={service} index={index} />
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
+        }
+      `}</style>
     </section>
   );
 }
