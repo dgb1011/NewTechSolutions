@@ -6,10 +6,12 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { InsightsSection } from "@/components/InsightsSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
+import { ScrollProgress } from "@/components/ScrollProgress";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white relative">
+      <ScrollProgress />
       <Navigation />
       <HeroSection />
       <ServicesSection />
