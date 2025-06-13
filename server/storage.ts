@@ -245,7 +245,7 @@ export class MemStorage implements IStorage {
     const article: Article = { 
       ...insertArticle, 
       id,
-      featured: insertArticle.featured || false
+      featured: insertArticle.featured ?? false
     };
     this.articles.set(id, article);
     return article;

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSpotlight } from "@/hooks/useSpotlight";
-import { CardSpotlight } from "./Spotlight";
+import { Spotlight } from "@/components/ui/spotlight";
 
 const services = [
   {
@@ -56,40 +56,48 @@ const services = [
 
 function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const { position, isVisible, bindSpotlight } = useSpotlight();
-
-  useEffect(() => {
-    const cleanup = bindSpotlight(cardRef.current);
-    return cleanup;
-  }, [bindSpotlight]);
 
   return (
     <motion.div
       ref={cardRef}
-      className="service-card relative glass-card rounded-2xl p-8 hover-lift cursor-pointer"
+      className="service-card relative glass-card rounded-2xl p-8 hover-lift cursor-pointer overflow-hidden"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{ 
+        scale: 1.02,
+        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)"
+      }}
     >
-      <CardSpotlight x={position.x} y={position.y} visible={isVisible} />
+      <Spotlight className="absolute inset-0" size={300} />
+      
       <div className="relative z-10">
-        <div className={`w-16 h-16 bg-gradient-to-br from-${service.color} to-${service.color}/50 rounded-xl flex items-center justify-center mb-6`}>
+        <div className={`w-16 h-16 bg-gradient-to-br from-${service.color} to-${service.color}/50 rounded-xl flex items-center justify-center mb-6 animate-pulse-glow`}>
           <i className={`${service.icon} text-white text-2xl`}></i>
         </div>
         <h3 className="text-2xl font-semibold mb-4 gradient-text">{service.title}</h3>
         <p className="text-neutral-300 mb-6 leading-relaxed">
           {service.description}
         </p>
-        <img 
+        <motion.img 
           src={service.image} 
           alt={service.title} 
-          className="rounded-lg w-full h-40 object-cover mb-4" 
+          className="rounded-lg w-full h-40 object-cover mb-4 opacity-80 hover:opacity-100 transition-opacity" 
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.3 }}
         />
         <div className="flex flex-wrap gap-2">
-          {service.technologies.map((tech) => (
-            <span key={tech} className="bg-white/10 px-3 py-1 rounded-full text-xs">
+          {service.technologies.map((tech, techIndex) => (
+            <motion.span 
+              key={tech} 
+              className="bg-white/10 px-3 py-1 rounded-full text-xs border border-white/5 hover:bg-white/20 transition-colors"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 + techIndex * 0.05 }}
+              whileHover={{ scale: 1.1 }}
+            >
               {tech}
-            </span>
+            </motion.span>
           ))}
         </div>
       </div>
