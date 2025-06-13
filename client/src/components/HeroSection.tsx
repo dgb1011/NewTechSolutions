@@ -1,183 +1,122 @@
-import { Button } from "@/components/ui/button";
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-
-// React Bits Animated Text Component
-const AnimatedText = ({ text, className = "" }: { text: string; className?: string }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [loopNum, setLoopNum] = useState(0);
-  const [typingSpeed, setTypingSpeed] = useState(150);
-
-  const words = ["Innovation", "Excellence", "Transformation", "Solutions"];
-
-  useEffect(() => {
-    const handleType = () => {
-      const current = loopNum % words.length;
-      const fullText = words[current];
-
-      setDisplayText(isDeleting 
-        ? fullText.substring(0, displayText.length - 1)
-        : fullText.substring(0, displayText.length + 1)
-      );
-
-      setTypingSpeed(isDeleting ? 30 : 150);
-
-      if (!isDeleting && displayText === fullText) {
-        setTimeout(() => setIsDeleting(true), 500);
-      } else if (isDeleting && displayText === '') {
-        setIsDeleting(false);
-        setLoopNum(loopNum + 1);
-      }
-    };
-
-    const timer = setTimeout(handleType, typingSpeed);
-    return () => clearTimeout(timer);
-  }, [displayText, isDeleting, loopNum, typingSpeed]);
-
-  return (
-    <span className={className}>
-      {displayText}
-      <span className="animate-pulse">|</span>
-    </span>
-  );
-};
-
-// React Bits Magnetic Button Component
-const MagneticButton = ({ children, className = "", ...props }: any) => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setPosition({ x: x * 0.1, y: y * 0.1 });
-  };
-
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
-  return (
-    <motion.div
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 200, damping: 10 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <Button className={className} {...props}>
-        {children}
-      </Button>
-    </motion.div>
-  );
-};
-
-// React Bits Floating Particles Component
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 10,
-  }));
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute bg-red-500/20 rounded-full"
-          style={{
-            width: particle.size,
-            height: particle.size,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-          }}
-          animate={{
-            y: [-20, 20, -20],
-            opacity: [0.2, 0.8, 0.2],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
+import { useSpotlight } from "@/hooks/useSpotlight";
+import { Spotlight } from "./Spotlight";
 
 export function HeroSection() {
+  const heroRef = useRef<HTMLElement>(null);
+  const { position, isVisible, bindSpotlight } = useSpotlight();
+
+  useEffect(() => {
+    const cleanup = bindSpotlight(heroRef.current);
+    return cleanup;
+  }, [bindSpotlight]);
+
+  const scrollToSection = (elementId: string) => {
+    const element = document.querySelector(elementId);
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyNTI1MjUiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-
-      <FloatingParticles />
-
-      <div className="container mx-auto px-6 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            <AnimatedText text="Innovation" className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent" />
-            <br />
-            <span className="text-red-500">Redefined</span>
-          </h1>
-
-          <motion.p 
-            className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            We craft digital experiences that push boundaries and transform industries. 
-            From concept to deployment, we're your partners in technological excellence.
-          </motion.p>
-
+    <section id="home" ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
+      <Spotlight x={position.x} y={position.y} visible={isVisible} />
+      
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
+            className="space-y-8"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <MagneticButton 
-              size="lg" 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/25"
-            >
-              Start Your Project
-            </MagneticButton>
-            <MagneticButton 
-              variant="outline" 
-              size="lg" 
-              className="border-gray-600 text-white hover:bg-gray-800 px-8 py-3 text-lg transition-all duration-300 hover:scale-105"
-            >
-              View Portfolio
-            </MagneticButton>
+            <div className="space-y-6">
+              <h1 className="text-4xl lg:text-6xl font-light leading-tight">
+                <span className="gradient-text">Building Tomorrow's</span><br />
+                <span className="font-semibold text-white">Digital Solutions</span>
+              </h1>
+              <p className="text-xl text-neutral-300 leading-relaxed max-w-lg">
+                We craft cutting-edge web applications, mobile solutions, and digital experiences that push the boundaries of technology.
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <motion.button 
+                onClick={() => scrollToSection('#contact')}
+                className="bg-mars hover:bg-mars/80 px-8 py-4 rounded-lg font-medium transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Start Your Project
+              </motion.button>
+              <motion.button 
+                onClick={() => scrollToSection('#portfolio')}
+                className="border border-white/20 hover:border-white/40 px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:bg-white/5"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View Our Work
+              </motion.button>
+            </div>
+            
+            <div className="flex items-center space-x-8 pt-8">
+              <div className="text-center">
+                <div className="text-2xl font-semibold gradient-text">50+</div>
+                <div className="text-sm text-neutral-400">Projects Delivered</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-semibold gradient-text">98%</div>
+                <div className="text-sm text-neutral-400">Client Satisfaction</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-semibold gradient-text">24/7</div>
+                <div className="text-sm text-neutral-400">Support</div>
+              </div>
+            </div>
           </motion.div>
-        </motion.div>
+          
+          {/* Right Visual */}
+          <motion.div 
+            className="relative"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          >
+            <div className="glass-card rounded-2xl p-8 space-y-6">
+              <img 
+                src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                alt="Modern tech office workspace" 
+                className="rounded-xl shadow-lg w-full h-64 object-cover" 
+              />
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-white/5 rounded-lg p-4 text-center">
+                  <i className="fas fa-code text-mars text-2xl mb-2"></i>
+                  <div className="text-sm text-neutral-300">Full-Stack</div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-4 text-center">
+                  <i className="fas fa-mobile-alt text-saturn text-2xl mb-2"></i>
+                  <div className="text-sm text-neutral-300">Mobile</div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-4 text-center">
+                  <i className="fas fa-cloud text-neptune text-2xl mb-2"></i>
+                  <div className="text-sm text-neutral-300">Cloud</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-mars to-transparent rounded-full opacity-20 animate-float"></div>
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-saturn to-transparent rounded-full opacity-20 animate-float-delayed"></div>
+          </motion.div>
+        </div>
       </div>
-
-      {/* Enhanced floating elements */}
-      <motion.div 
-        className="absolute top-20 left-10 w-20 h-20 bg-red-500/10 rounded-full blur-xl"
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3] 
-        }}
-        transition={{ duration: 4, repeat: Infinity }}
-      />
-      <motion.div 
-        className="absolute bottom-20 right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl"
-        animate={{ 
-          scale: [1.2, 1, 1.2],
-          opacity: [0.4, 0.7, 0.4] 
-        }}
-        transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-      />
     </section>
   );
 }

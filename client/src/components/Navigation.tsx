@@ -1,211 +1,96 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
-
-// React Bits Magnetic Navigation Item Component
-const MagneticNavItem = ({ item, onClick }: { item: any; onClick?: () => void }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setMousePosition({ x: x * 0.1, y: y * 0.1 });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePosition({ x: 0, y: 0 });
-    setIsHovered(false);
-  };
-
-  return (
-    <motion.a
-      href={item.href}
-      className="text-gray-300 hover:text-white transition-colors duration-200 relative block px-4 py-2"
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x: mousePosition.x, y: mousePosition.y }}
-      transition={{ type: "spring", stiffness: 200, damping: 10 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {item.name}
-      <motion.div
-        className="absolute bottom-0 left-4 w-0 h-0.5 bg-red-500"
-        animate={{ width: isHovered ? "calc(100% - 2rem)" : "0%" }}
-        transition={{ duration: 0.3 }}
-      />
-    </motion.a>
-  );
-};
-
-// React Bits Glowing Button Component
-const GlowingButton = ({ children, className = "", ...props }: any) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="relative"
-    >
-      <Button 
-        className={`relative overflow-hidden ${className}`}
-        {...props}
-      >
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0"
-          animate={{ opacity: isHovered ? 0.2 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
-        <span className="relative z-10">{children}</span>
-      </Button>
-      <motion.div
-        className="absolute inset-0 rounded-md"
-        animate={{
-          boxShadow: isHovered 
-            ? "0 0 20px rgba(239, 68, 68, 0.5), 0 0 40px rgba(239, 68, 68, 0.3)" 
-            : "0 0 0px rgba(239, 68, 68, 0)"
-        }}
-        transition={{ duration: 0.3 }}
-      />
-    </motion.div>
-  );
-};
+import { useState } from "react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
 
 export function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "Services", href: "#services" },
-    { name: "Portfolio", href: "#portfolio" },
-    { name: "Insights", href: "#insights" },
-    { name: "Contact", href: "#contact" },
+    { href: "#home", label: "Home" },
+    { href: "#services", label: "Services" },
+    { href: "#portfolio", label: "Portfolio" },
+    { href: "#insights", label: "Insights" },
   ];
 
+  const scrollToSection = (elementId: string) => {
+    const element = document.querySelector(elementId);
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+    setIsMenuOpen(false);
+  };
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? "bg-black/90 backdrop-blur-lg border-b border-gray-800 shadow-lg shadow-red-500/10" 
-          : "bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          {/* Enhanced Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="text-2xl font-bold text-white relative"
-          >
-            <motion.span 
-              className="text-red-500"
-              animate={{ textShadow: ["0 0 0px #ef4444", "0 0 10px #ef4444", "0 0 0px #ef4444"] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              Tech
-            </motion.span>
-            Agency
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
-            {navItems.map((item) => (
-              <MagneticNavItem key={item.name} item={item} />
-            ))}
-            <GlowingButton 
-              className="bg-red-600 hover:bg-red-700 text-white ml-4"
-              size="sm"
-            >
-              Get Started
-            </GlowingButton>
-          </div>
-
-          {/* Enhanced Mobile Menu Button */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.1 }}
-            className="md:hidden text-white p-2 relative"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-              <motion.div
-                animate={isMobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                className="w-full h-0.5 bg-white origin-center"
-              />
-              <motion.div
-                animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                className="w-full h-0.5 bg-white"
-              />
-              <motion.div
-                animate={isMobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-                className="w-full h-0.5 bg-white origin-center"
-              />
+    <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-mars to-jupiter rounded-lg flex items-center justify-center">
+              <i className="fas fa-code text-white text-sm"></i>
             </div>
-          </motion.button>
+            <span className="text-xl font-semibold">NewTech Agency</span>
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.href}
+                onClick={() => scrollToSection(item.href)}
+                className="text-white/80 hover:text-white transition-colors duration-200"
+              >
+                {item.label}
+              </button>
+            ))}
+            <button 
+              onClick={() => scrollToSection('#contact')}
+              className="bg-mars hover:bg-mars/80 px-6 py-2 rounded-lg transition-colors duration-200"
+            >
+              Contact
+            </button>
+          </div>
+          
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white/80 hover:text-white"
+            >
+              <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+            </button>
+          </div>
         </div>
 
-        {/* Enhanced Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden bg-black/95 backdrop-blur-lg border-t border-gray-800 overflow-hidden"
-            >
-              <div className="py-4 space-y-2">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.name}
-                    initial={{ x: -50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -50, opacity: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <MagneticNavItem 
-                      item={item} 
-                      onClick={() => setIsMobileMenuOpen(false)} 
-                    />
-                  </motion.div>
-                ))}
-                <motion.div 
-                  className="px-4 pt-2"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden border-t border-white/10 py-4"
+          >
+            <div className="flex flex-col space-y-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.href}
+                  onClick={() => scrollToSection(item.href)}
+                  className="text-white/80 hover:text-white transition-colors duration-200 text-left"
                 >
-                  <GlowingButton 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white"
-                    size="sm"
-                  >
-                    Get Started
-                  </GlowingButton>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {item.label}
+                </button>
+              ))}
+              <button 
+                onClick={() => scrollToSection('#contact')}
+                className="bg-mars hover:bg-mars/80 px-6 py-2 rounded-lg transition-colors duration-200 text-left w-fit"
+              >
+                Contact
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
-    </motion.nav>
+    </nav>
   );
 }
