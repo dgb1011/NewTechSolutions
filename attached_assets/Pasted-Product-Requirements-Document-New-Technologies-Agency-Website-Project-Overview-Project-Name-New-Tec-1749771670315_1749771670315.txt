@@ -1,0 +1,506 @@
+Product Requirements Document
+New Technologies Agency Website
+Project Overview
+Project Name: New Technologies Agency Corporate Website
+Document Version: 1.0
+Date: June 12, 2025
+Target Audience: Senior Full-Stack Developer
+Project Type: Corporate Website Development
+
+1. Executive Summary
+This PRD outlines the development requirements for a modern, interactive corporate website for a New Technologies Agency specializing in full-stack development, web applications, websites, and mobile applications. The website will serve as the primary digital presence, showcasing the agency's expertise in cutting-edge technologies while demonstrating their philosophy through innovative design and user experience.
+2. Project Objectives
+Primary Goals
+
+Establish a strong digital presence that reflects technological expertise
+Showcase portfolio projects with detailed technical specifications
+Generate qualified leads through strategic contact integration
+Demonstrate proficiency in modern web technologies and animations
+Create an immersive user experience that differentiates from competitors
+
+Success Metrics
+
+Page load time under 3 seconds
+Mobile responsiveness across all devices
+95%+ accessibility compliance (WCAG 2.1 AA)
+SEO optimization for target keywords
+Smooth 60fps animations across all interactions
+
+3. Technical Architecture
+Frontend Stack
+
+Framework: React.js with Next.js for SSR/SSG capabilities
+Styling: Tailwind CSS with custom components
+Animation Libraries:
+
+Three.js for 3D animations
+Framer Motion for micro-interactions
+GSAP for complex timeline animations
+
+
+State Management: React Context API / Zustand
+Performance: React.memo, lazy loading, code splitting
+
+Backend Requirements
+
+CMS Integration: Headless CMS (Sanity/Strapi) for content management
+Contact Forms: Form validation and email integration
+Analytics: Google Analytics 4 implementation
+SEO: Next.js SEO optimization with structured data
+
+Hosting & Deployment
+
+Platform: Vercel/Netlify for optimal performance
+CDN: Integrated CDN for asset delivery
+SSL: SSL certificate implementation
+Performance Monitoring: Core Web Vitals tracking
+
+4. Detailed Feature Requirements
+4.1 Hero Section
+Core Components (Interactive Spotlight + Spline 3D Integration):
+
+Split-layout design with content on left, interactive 3D scene on right
+Dynamic spotlight effect that follows mouse movement with smooth spring animations
+Spline 3D scene integration with lazy loading and suspense fallback
+Card-based container with subtle dark background (bg-black/[0.96])
+Gradient text effects using bg-clip-text for headlines
+Interactive spotlight with radial gradient and blur effects
+Responsive flex layout adapting to mobile/desktop viewports
+
+Technical Specifications:
+
+Spline scene integration with @splinetool/react-spline
+Framer Motion for spotlight animations with spring physics
+Lazy loading with React Suspense for performance optimization
+Mouse tracking with useCallback and useEffect hooks
+Transform functions for smooth spotlight positioning
+Card component system with shadcn/ui architecture
+Gradient text rendering with Tailwind CSS utilities
+
+Animation Requirements:
+
+Spotlight follows cursor with spring-based smoothing (bounce: 0)
+Opacity transitions for spotlight visibility (0 to 100%)
+Smooth mouse tracking with transform animations
+3D scene interactions within Spline iframe
+Gradient text effects with neutral color scales
+Blur effects on spotlight with transition duration controls
+
+Layout Architecture:
+
+Flex-based split layout (50/50 on desktop)
+Left section: Typography hierarchy with gradient headings
+Right section: Full-height Spline 3D scene container
+Responsive breakpoints with mobile-first approach
+Z-index layering for spotlight and content positioning
+Overflow hidden on parent containers for spotlight effects
+
+Design Philosophy:
+
+Interactive elements that respond to user engagement
+Split-screen layout for content/visual balance
+Modern card-based component architecture
+Performance-optimized 3D integration
+Sophisticated hover effects with physics-based animations
+Clean typography with gradient text treatments
+
+4.2 Services Section
+Interactive Card Design (Spotlight Integration):
+
+Service cards with spotlight hover effects following mouse movement
+Card-based layout using shadcn/ui architecture
+Split content layout with service description and visual elements
+Interactive 3D elements or icons for each service category
+Gradient text treatments for service titles
+Smooth hover animations with spring physics
+
+Service Categories with Interactive Elements:
+
+Full-Stack Development: Interactive code visualization or terminal animation
+Web Application Development: Dynamic component showcase with Spline integration
+Website Development: Responsive design preview with live interactions
+Mobile App Development: Device mockup with interactive app preview
+Technology Consulting: Data visualization or process flow animation
+UI/UX Design: Interactive design system showcase
+
+Technical Implementation:
+
+Card component system with consistent styling
+Spotlight component integration for each service card
+Lazy loading for 3D scenes and heavy interactive elements
+Framer Motion for card animations and transitions
+CSS Grid/Flexbox for responsive card layouts
+Spring-based hover effects with customizable physics
+Transform3D for hardware-accelerated animations
+
+Interactive Features:
+
+Mouse-following spotlight effects on card hover
+Smooth card elevation changes with box-shadow transitions
+Gradient text reveals on hover states
+Staggered animation sequences for card grid appearance
+Interactive icons or 3D elements that respond to cursor proximity
+Smooth transitions between service detail views
+
+4.3 Portfolio Section
+Interactive Project Cards (Enhanced with Spotlight):
+
+Card-based project showcase with spotlight hover effects
+Split-layout cards featuring project preview and interactive 3D elements
+Gradient text treatments for project titles and descriptions
+Mouse-tracking spotlight effects that reveal project details
+Lazy-loaded Spline scenes for project demonstrations
+Smooth card transitions with spring-based animations
+
+Project Card Structure:
+
+Left Panel: Project information with gradient typography
+
+Project title with bg-clip-text gradient effects
+Brief description in neutral-300 color
+Technology stack badges with hover interactions
+Project category tags with spotlight effects
+"View Details" CTA with animated spotlight background
+
+
+Right Panel: Interactive 3D preview or live demo
+
+Spline 3D scene integration showing project concept
+Interactive mockups or live website previews
+Animated technology stack visualizations
+
+
+
+Individual Project Pages (Spotlight Navigation):
+
+Full-screen card layout with spotlight navigation effects
+Interactive 3D project architecture diagrams using Spline
+Spotlight-enhanced image galleries and code showcases
+Spring-animated section transitions
+Mouse-following spotlight effects on technical details
+Interactive technology timeline with spotlight reveals
+
+Technical Features:
+
+Card component architecture with shadcn/ui styling
+Spotlight component integration for hover effects
+Dynamic routing with smooth page transitions
+Lazy loading for Spline scenes and heavy assets
+Framer Motion for card animations and reveals
+Transform-based spotlight positioning with spring physics
+Suspense boundaries for 3D content loading
+Interactive breadcrumb navigation with spotlight effects
+
+4.4 Client Testimonials Section
+Design Elements:
+
+Carousel/slider with smooth transitions
+Client avatars with subtle animations
+Rating system display
+Company logos integration
+Quote formatting with design emphasis
+
+Interactive Features:
+
+Auto-play with pause on hover
+Touch/swipe gestures for mobile
+Dot navigation indicators
+Smooth slide transitions
+Testimonial filtering by service type
+
+4.5 Latest Insights Section
+Content Structure:
+
+Blog post previews
+Technical articles
+Industry insights
+Tutorial snippets
+Technology trend analysis
+
+Features:
+
+Card-based layout with hover effects
+Category filtering
+Read time estimation
+Author information
+Publication date
+Social sharing buttons
+
+4.6 Contact Section
+Contact Methods:
+
+Contact form with real-time validation
+Email address with click-to-copy
+Phone number with click-to-call
+Physical address with map integration
+Social media links
+Response time expectations
+
+Form Features:
+
+Multi-step form with progress indicator
+File upload capability for project briefs
+Service selection dropdown
+Budget range selector
+Project timeline picker
+GDPR compliance checkboxes
+
+4.7 Footer
+Information Architecture:
+
+Company information
+Service links
+Portfolio highlights
+Contact information
+Social media links
+Legal pages (Privacy Policy, Terms)
+Newsletter signup
+Copyright information
+
+5. Design System
+5.1 Color Palette
+Primary Colors (Based on Reference Design):
+
+Pure Black: #000000 (Primary background)
+Deep Charcoal: #1a1a1a (Secondary backgrounds)
+Soft Black: #2d2d2d (Card backgrounds)
+Dark Gray: #404040 (Border elements)
+Medium Gray: #6b6b6b (Inactive text)
+
+Text Colors:
+
+Pure White: #ffffff (Primary text)
+Gradient Text: bg-gradient-to-b from-neutral-50 to-neutral-400 (Hero headlines)
+Neutral 300: #d4d4d8 (Secondary descriptive text)
+White 70% Opacity: rgba(255,255,255,0.7) (Subtitle text)
+White 50% Opacity: rgba(255,255,255,0.5) (Tertiary text)
+White 40% Opacity: rgba(255,255,255,0.4) (Footer/metadata)
+White 20% Opacity: rgba(255,255,255,0.2) (Subtle borders)
+
+Background Colors:
+
+Pure Black: #000000 (Primary background)
+Black 96% Opacity: rgba(0,0,0,0.96) (Card backgrounds)
+Zinc Gradient: from-zinc-50 via-zinc-100 to-zinc-200 (Spotlight effects)
+
+Accent Colors (Solar System Inspired):
+
+Mars Red: #cd5c5c (Warm highlights and CTAs)
+Saturn Gold: #daa520 (Premium accents and borders)
+Neptune Blue: #4682b4 (Cool interactive states)
+Jupiter Orange: #ff8c00 (Energy and focus elements)
+White/10% Background: rgba(255,255,255,0.1) (Hover states)
+
+5.2 Typography (Refined Minimal Approach)
+Font Hierarchy (Inspired by Reference Design):
+
+Primary Font: Manrope or similar modern sans-serif (Inter/Poppins as alternatives)
+Headlines: Mixed font weights - Light (300) for main text + Semibold (600) for emphasis
+Body Text: Regular (400) for optimal readability
+Navigation/UI: Medium (500) for subtle prominence
+Code/Technical: Monospace font (JetBrains Mono)
+
+Font Sizes (Minimal, Elegant Scaling):
+
+H1: 4rem (mobile: 2.5rem) - Large, impactful headlines
+H2: 2.5rem (mobile: 2rem) - Section headers
+H3: 2rem (mobile: 1.5rem) - Subsection headers
+Body Large: 1.125rem (mobile: 1rem) - Primary content
+Body Regular: 1rem (mobile: 0.875rem) - Standard text
+Small/Metadata: 0.875rem (mobile: 0.75rem) - Secondary information
+
+Typography Design Principles:
+
+Generous line spacing (1.6-1.8) for enhanced readability
+Strategic use of font weight contrast within single headlines
+Subtle letter spacing adjustments for premium feel
+Consistent hierarchy with clear visual relationships
+White space utilization for sophisticated typography presentation
+
+5.3 Animation Guidelines (Minimal & Sophisticated)
+Micro-Interactions (Refined Approach):
+
+Button hover effects: 0.3s ease-out with subtle background opacity changes
+Navigation links: 0.2s color transitions from white/80 to white/100
+CTA buttons: Gentle scale (1.02x) and opacity shifts
+Form field focus: 0.2s ease-out with subtle border glow
+Loading states: Minimal, elegant progress indicators
+
+Background Animations:
+
+3D scene elements: Slow, continuous movement (0.5-1 RPM)
+Particle systems: Gentle floating motion with opacity variations
+Glassmorphism effects: Subtle blur and transparency shifts
+Geometric shapes: Smooth rotation and morphing transformations
+
+Page Transitions (Elegant & Seamless):
+
+Route changes: 0.4s fade transitions with slight vertical offset
+Section reveals: Staggered opacity animations (0.6s duration)
+Scroll-triggered: Intersection-based with easing curves
+Modal/overlay appearances: Scale and fade combinations
+
+Layout Animations:
+
+Content containers: Gentle slide-up animations on viewport entry
+Grid items: Staggered appearance with 0.1s delays
+Statistics/metrics: Count-up animations with easing
+Image reveals: Subtle scale and opacity transitions
+
+Design Philosophy for Motion:
+
+Prioritize subtlety over dramatic effects
+Use opacity and scale transforms primarily
+Implement smooth easing curves (cubic-bezier)
+Maintain consistent timing across similar elements
+Ensure animations enhance rather than distract from content
+
+6. Performance Requirements
+6.1 Core Web Vitals
+
+Largest Contentful Paint (LCP): < 2.5 seconds
+First Input Delay (FID): < 100 milliseconds
+Cumulative Layout Shift (CLS): < 0.1
+
+6.2 Optimization Strategies
+
+Image optimization (WebP/AVIF formats)
+Code splitting and lazy loading
+Critical CSS inlining
+Resource preloading
+Service worker implementation
+Bundle size optimization (< 250KB initial load)
+
+7. Responsive Design
+7.1 Breakpoints
+
+Mobile: 320px - 768px
+Tablet: 768px - 1024px
+Desktop: 1024px - 1440px
+Large Desktop: 1440px+
+
+7.2 Mobile Considerations
+
+Touch-friendly interactions (44px minimum)
+Simplified 3D animations for performance
+Swipe gestures for carousels
+Collapsible navigation menu
+Optimized form layouts
+
+8. SEO & Accessibility
+8.1 SEO Requirements
+
+Semantic HTML structure
+Meta tags optimization
+Open Graph implementation
+Schema.org structured data
+XML sitemap generation
+Robots.txt configuration
+
+8.2 Accessibility Standards
+
+WCAG 2.1 AA compliance
+Keyboard navigation support
+Screen reader compatibility
+Color contrast ratios (4.5:1 minimum)
+Alt text for all images
+Focus indicators for interactive elements
+
+9. Content Management
+9.1 CMS Integration
+
+Portfolio project management
+Blog post creation and editing
+Service description updates
+Client testimonial management
+Team member profiles
+Meta data configuration
+
+9.2 Content Guidelines
+
+Professional tone of voice
+Technical accuracy
+SEO-optimized content
+Consistent brand messaging
+Regular content updates
+
+10. Testing & Quality Assurance
+10.1 Testing Strategy
+
+Cross-browser testing (Chrome, Firefox, Safari, Edge)
+Device testing (iOS, Android, various screen sizes)
+Performance testing (Lighthouse, WebPageTest)
+Accessibility testing (axe, WAVE)
+User acceptance testing
+
+10.2 Quality Checkpoints
+
+Code review processes
+Performance benchmarking
+Security vulnerability scanning
+SEO audit completion
+Accessibility compliance verification
+
+11. Launch & Maintenance
+11.1 Pre-Launch Checklist
+
+Domain and SSL configuration
+Analytics implementation
+Error monitoring setup
+Backup systems configuration
+Performance monitoring tools
+
+11.2 Post-Launch Support
+
+Regular security updates
+Performance monitoring
+Content updates
+Feature enhancements
+Technical support
+
+12. Timeline & Milestones
+Phase 1: Foundation (Week 1-2)
+
+Project setup and architecture
+Design system implementation
+Basic component development
+
+Phase 2: Core Development (Week 3-5)
+
+Hero section with 3D animations
+Services section implementation
+Navigation and routing setup
+
+Phase 3: Content Sections (Week 6-7)
+
+Portfolio section and project pages
+Testimonials and insights sections
+Contact form implementation
+
+Phase 4: Polish & Optimization (Week 8-9)
+
+Performance optimization
+Cross-browser testing
+Accessibility improvements
+SEO implementation
+
+Phase 5: Launch (Week 10)
+
+Final testing and bug fixes
+Deployment and monitoring setup
+Client training and handover
+
+13. Risk Assessment
+13.1 Technical Risks
+
+3D animation performance on low-end devices
+Complex animations causing accessibility issues
+Heavy asset loading affecting performance
+Browser compatibility challenges
+
+13.2 Mitigation Strategies
+
+Progressive enhancement approach
+Graceful degradation for older browsers
+Performance budgets and monitoring
+Extensive testing on various devices
