@@ -1,11 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import type { Project } from "@shared/schema";
+import { API_ENDPOINTS } from "@/lib/api";
+import { useLocation } from "wouter";
+import { Project } from "@/types/project";
 
 export function PortfolioSection() {
-  const { data: projects, isLoading } = useQuery<Project[]>({
-    queryKey: ['/api/projects/featured'],
+  const [, navigate] = useLocation();
+  const { data, isLoading, isError } = useQuery<Project[]>({
+    queryKey: [API_ENDPOINTS.projects.featured],
   });
+
+  // Map _id to id for frontend use
+  const projects = data?.map((p) => ({ ...p, id: p._id }));
+
+  const handleViewProject = (projectId: string) => {
+    navigate(`/projects/${projectId}`);
+  };
+
+  const handleViewAllProjects = () => {
+    navigate('/projects');
+  };
 
   if (isLoading) {
     return (
@@ -33,6 +47,36 @@ export function PortfolioSection() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section id="portfolio" className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Featured</span> <span className="font-semibold">Projects</span>
+            </h2>
+            <p className="text-red-500">Failed to load projects. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!projects || projects.length === 0) {
+    return (
+      <section id="portfolio" className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Featured</span> <span className="font-semibold">Projects</span>
+            </h2>
+            <p className="text-neutral-400">No featured projects found.</p>
           </div>
         </div>
       </section>
@@ -108,7 +152,10 @@ export function PortfolioSection() {
                           <div className="text-neutral-400">{project.timeline}</div>
                         </div>
                       </div>
-                      <button className={`inline-flex items-center space-x-2 ${colors.button} transition-colors group`}>
+                      <button 
+                        onClick={() => handleViewProject(project.id)}
+                        className={`inline-flex items-center space-x-2 ${colors.button} transition-colors group`}
+                      >
                         <span>View Case Study</span>
                         <i className="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
                       </button>
@@ -134,7 +181,10 @@ export function PortfolioSection() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <button className="bg-gradient-to-r from-mars to-saturn hover:from-mars/80 hover:to-saturn/80 px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:scale-105">
+          <button 
+            onClick={handleViewAllProjects}
+            className="bg-gradient-to-r from-mars to-saturn hover:from-mars/80 hover:to-saturn/80 px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:scale-105"
+          >
             View All Projects
           </button>
         </motion.div>

@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import type { Testimonial } from "@shared/schema";
+import { Testimonial } from "@/types/testimonial";
+import { API_ENDPOINTS } from "@/lib/api";
 
 export function TestimonialsSection() {
-  const { data: testimonials, isLoading } = useQuery<Testimonial[]>({
-    queryKey: ['/api/testimonials'],
+  const { data, isLoading, isError } = useQuery<Testimonial[]>({
+    queryKey: [API_ENDPOINTS.testimonials.all],
   });
+
+  // Map _id to id for frontend use
+  const testimonials = data?.map((t) => ({ ...t, id: t._id }));
 
   if (isLoading) {
     return (
@@ -42,6 +46,36 @@ export function TestimonialsSection() {
     );
   }
 
+  if (isError) {
+    return (
+      <section className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Client</span> <span className="font-semibold">Success Stories</span>
+            </h2>
+            <p className="text-red-500">Failed to load testimonials. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!testimonials || testimonials.length === 0) {
+    return (
+      <section className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Client</span> <span className="font-semibold">Success Stories</span>
+            </h2>
+            <p className="text-neutral-400">No testimonials found.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, i) => (
       <i
@@ -70,7 +104,7 @@ export function TestimonialsSection() {
         </motion.div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials?.map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               className="glass-card rounded-2xl p-8 hover-lift"

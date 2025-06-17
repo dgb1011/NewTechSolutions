@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import type { Article } from "@shared/schema";
+import { Article } from "@/types/article";
+import { API_ENDPOINTS } from "@/lib/api";
+import { useLocation } from "wouter";
 
 const categories = [
   { id: "all", label: "All" },
@@ -13,10 +15,14 @@ const categories = [
 
 export function InsightsSection() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [, navigate] = useLocation();
 
-  const { data: articles, isLoading } = useQuery<Article[]>({
-    queryKey: ['/api/articles', activeCategory === "all" ? undefined : activeCategory].filter(Boolean),
+  const { data, isLoading, isError } = useQuery<Article[]>({
+    queryKey: [API_ENDPOINTS.articles.all, activeCategory === "all" ? undefined : activeCategory].filter(Boolean),
   });
+
+  // Map _id to id for frontend use
+  const articles = data?.map((a) => ({ ...a, id: a._id }));
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -51,6 +57,36 @@ export function InsightsSection() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section id="insights" className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Latest</span> <span className="font-semibold">Insights</span>
+            </h2>
+            <p className="text-red-500">Failed to load articles. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!articles || articles.length === 0) {
+    return (
+      <section id="insights" className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-light mb-6">
+              <span className="gradient-text">Latest</span> <span className="font-semibold">Insights</span>
+            </h2>
+            <p className="text-neutral-400">No articles found.</p>
           </div>
         </div>
       </section>
@@ -128,7 +164,10 @@ export function InsightsSection() {
                   <div className="text-xs text-neutral-400">
                     {formatDate(article.publishedAt)}
                   </div>
-                  <button className="text-mars hover:text-mars/80 transition-colors">
+                  <button 
+                    className="text-mars hover:text-mars/80 transition-colors"
+                    onClick={() => navigate(`/articles/${article.id}`)}
+                  >
                     <i className="fas fa-arrow-right"></i>
                   </button>
                 </div>

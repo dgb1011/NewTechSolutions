@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { insertContactSchema } from "@shared/schema";
+import * as storage from "./storage";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -28,16 +27,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get single project
   app.get("/api/projects/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid project ID" });
-      }
-      
-      const project = await storage.getProject(id);
+      const { id } = req.params;
+      const project = await storage.getProjectById(id);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
-      
       res.json(project);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch project" });
@@ -59,13 +53,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { category } = req.query;
       let articles;
-      
       if (category && typeof category === 'string') {
         articles = await storage.getArticlesByCategory(category);
       } else {
         articles = await storage.getArticles();
       }
-      
       res.json(articles);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch articles" });
@@ -85,16 +77,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get single article
   app.get("/api/articles/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid article ID" });
-      }
-      
-      const article = await storage.getArticle(id);
+      const { id } = req.params;
+      const article = await storage.getArticleById(id);
       if (!article) {
         return res.status(404).json({ message: "Article not found" });
       }
-      
       res.json(article);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch article" });
@@ -106,11 +93,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { slug } = req.params;
       const article = await storage.getArticleBySlug(slug);
-      
       if (!article) {
         return res.status(404).json({ message: "Article not found" });
       }
-      
       res.json(article);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch article" });
@@ -120,12 +105,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create contact submission
   app.post("/api/contacts", async (req, res) => {
     try {
-      const validatedData = insertContactSchema.parse(req.body);
-      const contact = await storage.createContact(validatedData);
-      
+      const contact = await storage.createContact(req.body);
       // In a real app, you would send an email notification here
       console.log("New contact submission:", contact);
-      
       res.status(201).json({ message: "Thank you for your message! We'll get back to you soon." });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -134,7 +116,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errors: error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
         });
       }
-      
       console.error("Contact submission error:", error);
       res.status(500).json({ message: "Failed to submit contact form" });
     }

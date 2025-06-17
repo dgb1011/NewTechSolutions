@@ -8,11 +8,15 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { useState, useEffect } from "react";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
+import ProjectDetail from "@/pages/ProjectDetail";
+import ArticleDetail from "@/pages/ArticleDetail";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/projects/:id" component={ProjectDetail} />
+      <Route path="/articles/:id" component={ArticleDetail} />
       <Route component={NotFound} />
     </Switch>
   );
