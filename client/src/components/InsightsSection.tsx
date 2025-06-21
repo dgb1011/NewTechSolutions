@@ -21,8 +21,8 @@ export function InsightsSection() {
     queryKey: [API_ENDPOINTS.articles.all, activeCategory === "all" ? undefined : activeCategory].filter(Boolean),
   });
 
-  // Map _id to id for frontend use
-  const articles = data?.map((a) => ({ ...a, id: a._id }));
+  // Map _id to id for frontend use, and include slug
+  const articles = data?.map((a) => ({ ...a, id: a._id, slug: a.slug }));
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -164,12 +164,22 @@ export function InsightsSection() {
                   <div className="text-xs text-neutral-400">
                     {formatDate(article.publishedAt)}
                   </div>
-                  <button 
-                    className="text-mars hover:text-mars/80 transition-colors"
-                    onClick={() => navigate(`/articles/${article.id}`)}
-                  >
-                    <i className="fas fa-arrow-right"></i>
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    <button 
+                      className="text-mars hover:text-mars/80 transition-colors"
+                      onClick={() => navigate(`/articles/slug/${article.slug}`)}
+                      title="Read Article"
+                    >
+                      <i className="fas fa-arrow-right"></i>
+                    </button>
+                    <button 
+                      className="text-mars hover:text-mars/80 transition-colors"
+                      onClick={() => window.open(article.sourceUrl, '_blank', 'noopener,noreferrer')}
+                      title="Read Original Source"
+                    >
+                      <i className="fas fa-external-link-alt"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.article>

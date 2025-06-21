@@ -61,6 +61,12 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        // Planet colors for enhanced case studies
+        mars: "hsl(0, 48%, 58%)",
+        saturn: "hsl(43, 74%, 49%)",
+        neptune: "hsl(207, 44%, 49%)",
+        jupiter: "hsl(30, 100%, 50%)",
+        venus: "hsl(15, 100%, 50%)",
       },
       keyframes: {
         "accordion-down": {

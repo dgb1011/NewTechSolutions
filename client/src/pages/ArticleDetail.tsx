@@ -5,11 +5,17 @@ import { API_ENDPOINTS } from "@/lib/api";
 
 export default function ArticleDetail() {
   const params = useParams();
-  const { id } = params;
+  const { id, slug } = params;
+
+  const endpoint = slug
+    ? API_ENDPOINTS.articles.bySlug(slug)
+    : id
+    ? API_ENDPOINTS.articles.byId(id)
+    : null;
 
   const { data, isLoading, isError } = useQuery<Article>({
-    queryKey: [API_ENDPOINTS.articles.byId(id)],
-    enabled: !!id,
+    queryKey: [endpoint],
+    enabled: !!endpoint,
   });
 
   if (isLoading) {

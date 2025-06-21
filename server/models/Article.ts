@@ -9,6 +9,7 @@ const articleSchema = new mongoose.Schema({
   category: { type: String, required: true },
   readTime: { type: Number, required: true },
   imageUrl: { type: String, required: true },
+  sourceUrl: { type: String, required: true },
   publishedAt: { type: Date, required: true },
   featured: { type: Boolean, default: false },
 }, { timestamps: true });
@@ -23,6 +24,7 @@ export const insertArticleSchema = z.object({
   category: z.string(),
   readTime: z.number(),
   imageUrl: z.string(),
+  sourceUrl: z.string(),
   publishedAt: z.date(),
   featured: z.boolean().optional(),
 });
@@ -36,6 +38,7 @@ export type ArticleDocument = mongoose.Document & {
   category: string;
   readTime: number;
   imageUrl: string;
+  sourceUrl: string;
   publishedAt: Date;
   featured: boolean;
   createdAt: Date;
